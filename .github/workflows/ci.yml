@@ -1,0 +1,30 @@
+#Ensure your repository Secrets for DOCKER_USERNAME, DOCKER_PASSWORD,are properly configured
+#This pipeline is configured for spring boot applications
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: #Add additional branches if we neeed to add additional branches
+      - main 
+      - UAT
+      - dev
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+
+        - name: Build Docker image
+          run: |
+            docker build -t thebuckeyeman20/docker:template .
+
+        - name: Push Docker image to Docker Hub
+          run: |
+              docker push thebuckeyeman20/docker:template
