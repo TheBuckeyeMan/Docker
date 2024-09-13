@@ -4,34 +4,41 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: #Add additional branches if we neeed to add additional branches
+    branches: 
       - main 
       - UAT
       - dev
       - Python-Basic
+
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v2
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-        - name: Log in to Docker Hub
-          uses: docker/login-action@v2
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
 
-        - name: Log into Github Container Registry
-          run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        - name: Build Docker image
-          run: |
-            docker build -t thebuckeyeman20/docker:pythonbasic .
-            docker tag thebuckeyeman20/docker:pythonbasic ghcr.io/${{ github.repository }}/docker:pythonbasic
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-        - name: Push Docker image to Docker Hub
-          run: |
-              docker push thebuckeyeman20/docker:pythonbasic
-        # Push the Docker image to GitHub Container Registry
-        - name: Push the Docker image
-          run: docker push ghcr.io/${{ github.repository }}/my-python-app:latest
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Log into GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t thebuckeyeman20/docker:pythonbasic .
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push thebuckeyeman20/docker:pythonbasic
+
+      - name: Tag and Push Docker image to GitHub Container Registry
+        run: |
+          docker tag thebuckeyeman20/docker:pythonbasic ghcr.io/${{ github.repository }}/docker:pythonbasic
+          docker push ghcr.io/${{ github.repository }}/docker:pythonbasic
