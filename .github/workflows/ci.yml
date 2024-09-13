@@ -42,3 +42,4 @@ jobs:
         run: |
           docker tag thebuckeyeman20/docker:pythonbasic ghcr.io/thebuckeyeman/docker:pythonbasic
           docker push ghcr.io/thebuckeyeman/docker:pythonbasic
+          
