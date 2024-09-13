@@ -40,5 +40,5 @@ jobs:
 
       - name: Tag and Push Docker image to GitHub Container Registry
         run: |
-          docker tag thebuckeyeman20/docker:pythonbasic ghcr.io/${{ github.repository }}/docker:pythonbasic
-          docker push ghcr.io/${{ github.repository }}/docker:pythonbasic
+          docker tag thebuckeyeman20/docker:pythonbasic ghcr.io/thebuckeyeman/docker:pythonbasic
+          docker push ghcr.io/thebuckeyeman/docker:pythonbasic
